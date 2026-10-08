@@ -17,7 +17,10 @@ var sumItem = ""
 var leftW = ""
 var w = ""
 var s = ""
-var elems = ["fire","ice","aether","poison","vigor"]
+var elems = [
+ "fire", "ice", "aether",
+ "poison", "vigor",
+]
 
 // Orb dodge (plateau): measured values
 // 0 = dodge off
