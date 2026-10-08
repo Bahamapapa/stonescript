@@ -154,7 +154,7 @@ hasVoid = 0
 
 // ===== Temple: blade on cultist and boss =====
 ?loc = temple & heal = 0 & ghost = 0
- equipL poison big sword
+ equipL ice big sword
  equipR poison shield
 ?loc = temple & heal = 0 & ghost = 0 &
 ^foe = acronian &
