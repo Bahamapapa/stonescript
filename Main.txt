@@ -111,9 +111,17 @@ hasVoid = 0
  >`0,5,#yellow,@hist@
 
 // ===== General =====
-?hp < 10
+// Temple: strength potion, used on cultist
+?loc.begin & loc = temple
+ brew stone
+?loc = temple & foe = acronian &
+^foe.distance < 10 & item.CanActivate()
  activate potion
-?isBoss = 1 & hp < maxhp / 3
+
+?hp < 10 & loc ! temple
+ activate potion
+?isBoss = 1 & hp < maxhp / 3 &
+^loc ! temple
  activate potion
 
 ?hp < 10 & item.potion = empty &
