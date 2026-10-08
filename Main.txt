@@ -2,6 +2,8 @@ var heal = 0
 var bossSeen = 0
 var el = 0
 var lastArmor = 0
+ hist = ""
+ lastSt = -1
 var ph = 0
 var wisp = 0
 var isBoss = 0
@@ -40,6 +42,11 @@ var guardTime = 0
 
 // Guardian melee distance
 var melee = 8
+
+// Boss state history (debug)
+var hist = ""
+var lastSt = -1
+var ptime = 0
 
 ?loc.begin | loc.loop
  heal = 0
@@ -90,6 +97,18 @@ hasVoid = 0
  >`0,2,state=@foe.state@ time=@foe.time@
  >`0,3,armor=@foe.armor@ el=@el@
  >`0,4,@foe.buffs.string@
+
+// History: state:last time, newest first
+?isBoss = 1 & lastSt >= 0 &
+^foe.state ! lastSt
+ hist = lastSt + ":" + ptime + " " + hist
+?string.Size(hist) > 44
+ hist = string.Sub(hist, 0, 44)
+?isBoss = 1
+ lastSt = foe.state
+ ptime = foe.time
+?isBoss = 1 | string.Size(hist) > 0
+ >`0,5,#yellow,@hist@
 
 // ===== General =====
 ?hp < 10
