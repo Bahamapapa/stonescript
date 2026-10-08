@@ -1,0 +1,2 @@
+# stonescript
+stone story script
