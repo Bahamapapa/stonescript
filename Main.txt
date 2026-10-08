@@ -42,6 +42,12 @@ var guardTime = 0
 // Guardian melee distance
 var melee = 8
 
+// Plateau: blade waits after each transform
+var bladeDelay = 90
+var bladeOk = 1
+var curId = ""
+var phaseT = 0
+
 // Boss state history (debug)
 var hist = ""
 var lastSt = -1
@@ -54,6 +60,8 @@ var ptime = 0
  lastArmor = 0
  hist = ""
  lastSt = -1
+ curId = ""
+ phaseT = 0
 
 isBoss = 0
 ?foe = boss
@@ -147,7 +155,18 @@ hasVoid = 0
  equipL Crusher
  equipR poison shield
 
-?item.CanActivate("blade")
+// Blade: not during Dysangelos transform
+?loc = rocky & isBoss = 1 &
+^!string.Equals(foe.id, curId)
+ curId = foe.id
+ phaseT = totaltime
+bladeOk = 1
+?loc = rocky & isBoss = 1 &
+^totaltime < phaseT + bladeDelay
+ bladeOk = 0
+?foe = undamageable
+ bladeOk = 0
+?item.CanActivate("blade") & bladeOk = 1
  activate R
 ?item.CanActivate("heavy_hammer") &
 ^poena = 0
@@ -242,6 +261,10 @@ guard = 0
 ^item.GetCooldown("blade") <= 0
  equip blade
 
+// ===== Plateau: shovel until boss =====
+?loc = rocky & isBoss = 0 & heal = 0
+ equip shovel
+
 // ===== Plateau: phase =====
 ph = 0
 ?loc = rocky & heal = 0 &
@@ -334,6 +357,10 @@ wisp = 0
 ?loc = temple & isBoss = 1 &
 ^tongue = 0 & hasWisp = 0 &
 ^foe.distance > 20
+ sumItem = "fire talisman"
+ need = 1
+?loc = rocky & isBoss = 1 &
+^hasWisp = 0 & foe.state ! dodgeState
  sumItem = "fire talisman"
  need = 1
 
