@@ -130,6 +130,18 @@ hasVoid = 0
 ^item.CanActivate()
  activate voidweaver
 
+// ===== Temple: ice vs poison foes =====
+?loc = temple & heal = 0 & ghost = 0
+ equipL ice sword
+ equipR ice shield
+?loc = temple & heal = 0 & ghost = 0 &
+^foe = acronian &
+^item.GetCooldown("blade") <= 0
+ equip blade
+?loc = temple & isBoss = 1 & heal = 0 &
+^item.GetCooldown("blade") <= 0
+ equip blade
+
 // ===== Temple: tongue dodge =====
 ?tongue = 1 & wrap = 0 &
 ^foe.time >= nagTime &
@@ -277,7 +289,8 @@ wisp = 0
  sumItem = "aether talisman"
  need = 1
 ?loc = temple & isBoss = 1 &
-^tongue = 0 & hasWisp = 0
+^tongue = 0 & hasWisp = 0 &
+^foe.distance > 20
  sumItem = "fire talisman"
  need = 1
 
