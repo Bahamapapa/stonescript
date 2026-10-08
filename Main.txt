@@ -17,28 +17,25 @@ var sumItem = ""
 var leftW = ""
 var w = ""
 var s = ""
-var elems = [
- "fire", "ice", "aether",
- "poison", "vigor",
-]
+var elems = ["fire","ice","aether","poison","vigor"]
 
-// Уклонение от шара: числа из замеров
-// 0 = уклонение выключено
+// Orb dodge (plateau): measured values
+// 0 = dodge off
 var dodgeState = 115
 var dodgeTime = 64
 
-// Нагараджа: замерить! 0 = выключено
-// Замах языком (для отскока)
+// Nagaraja: measure! 0 = off
+// Tongue wind-up (dodge)
 var nagState = 0
 var nagTime = 0
-// Язык обвил героя (бить изо всех сил)
+// Tongue wrapped hero (hit hard)
 var wrapState = 0
 
-// Отскок от молота Стража (замерить)
+// Guardian hammer dodge (measure)
 var guardState = 0
 var guardTime = 0
 
-// Дистанция ближнего боя со Стражем
+// Guardian melee distance
 var melee = 8
 
 ?loc.begin | loc.loop
@@ -64,7 +61,7 @@ leftW = "Crusher"
 ?ghost = 1
  leftW = "fire wand"
 
-// Нагараджа: замах и захват языком
+// Nagaraja tongue states
 tongue = 0
 wrap = 0
 ?loc = temple & isBoss = 1 &
@@ -75,7 +72,7 @@ wrap = 0
  wrap = 1
  tongue = 1
 
-// Кто сейчас призван
+// Current summon
 hasWisp = 0
 ?summon.count > 0 &
 ^summon.GetId() = "cinderwisp"
@@ -84,14 +81,14 @@ hasVoid = 0
 ?summon.count > 0 & hasWisp = 0
  hasVoid = 1
 
-// Отладка: состояния любого босса
+// Debug: boss state
 ?isBoss = 1
  >`0,1,@foe.id@ d=@foe.distance@
  >`0,2,state=@foe.state@ time=@foe.time@
  >`0,3,armor=@foe.armor@ el=@el@
  >`0,4,@foe.buffs.string@
 
-// ===== Общая логика =====
+// ===== General =====
 ?hp < 10
  activate potion
 
@@ -116,12 +113,12 @@ hasVoid = 0
 ^poena = 0
  activate R
 
-// ===== Привидения: жезл огня =====
+// ===== Ghosts: fire wand =====
 ?ghost = 1
  equipL fire wand
  equipR poison shield
 
-// ===== Способности призывов =====
+// ===== Summon abilities =====
 ?hasWisp = 1 & foe.count > 0 &
 ^summon.GetVar("ignition") > 2 &
 ^item.GetCooldown("cinderwisp") <= 0 &
@@ -133,38 +130,38 @@ hasVoid = 0
 ^item.CanActivate()
  activate voidweaver
 
-// ===== Храм: отскок от языка =====
+// ===== Temple: tongue dodge =====
 ?tongue = 1 & wrap = 0 &
 ^foe.time >= nagTime &
 ^item.GetCooldown("mind") <= 0
  equipL mind
 
-// ===== Храм: язык обвил, только клинок =====
+// ===== Temple: wrapped, blade only =====
 ?wrap = 1
  equip blade
 
-// ===== Шахта: Бронзовый страж =====
+// ===== Mine: Bronze Guardian =====
 guard = 0
 ?loc = mine & isBoss = 1 & heal = 0
  guard = 1
 
-// Далеко: арбалет
+// Far: crossbow
 ?guard = 1 & foe.distance > melee
  equip aether crossbow
 
-// Вплотную, броня есть: молот
+// Close, armor: hammer
 ?guard = 1 & foe.distance <= melee &
 ^foe.armor > 0
  equipL aether hammer
  equipR aether shield
 
-// Вплотную, броня сломана: меч
+// Close, no armor: sword
 ?guard = 1 & foe.distance <= melee &
 ^foe.armor = 0
  equipL aether sword
  equipR aether shield
 
-// Способности: тяжёлый молот, клинок
+// Abilities: heavy hammer, blade
 ?guard = 1 & foe.distance <= melee &
 ^foe.armor > 0 &
 ^item.GetCooldown("heavy_hammer") <= 0
@@ -174,23 +171,23 @@ guard = 0
 ^item.GetCooldown("blade") <= 0
  equip blade
 
-// Отскок от удара молотом
+// Hammer dodge
 ?guard = 1 & guardState > 0 &
 ^foe.state = guardState &
 ^foe.time >= guardTime &
 ^item.GetCooldown("mind") <= 0
  equipL mind
 
-// ===== Каньон: Поэна =====
-// Тяжёлый молот держит в оглушении
+// ===== Deadwood: Poena =====
+// Heavy hammer keeps her stunned
 ?poena = 1 & heal = 0
  equip heavy hammer
-// Клинок готов: один мощный удар
+// Blade ready: one big hit
 ?poena = 1 & heal = 0 &
 ^item.GetCooldown("blade") <= 0
  equip blade
 
-// ===== Плато: определение фазы =====
+// ===== Plateau: phase =====
 ph = 0
 ?loc = rocky & heal = 0 &
 ^foe.id = dysangelos_elementalist
@@ -199,7 +196,7 @@ ph = 0
 ^foe.id = dysangelos_perfected
  ph = 3
 
-// Фаза 2: контр-стихия
+// Phase 2: counter element
 ?ph = 2 & foe = poison
  equipL ice sword
  equipR ice shield
@@ -216,14 +213,14 @@ ph = 0
  equipL fire sword
  equipR fire shield
 
-// Фаза 3: смена стихии при росте брони
+// Phase 3: next element on armor gain
 ?foe.id = dysangelos_perfected &
 ^foe.armor > lastArmor
  el = (el + 1) % 5
 ?foe.id = dysangelos_perfected
  lastArmor = foe.armor
 
-// Броня есть: молот, нет: меч
+// Armor: hammer, else sword
 ?ph = 3 & foe.armor > 0
  w = elems[el] + " hammer"
 :?ph = 3
@@ -234,12 +231,12 @@ ph = 0
  equipL @w@
  equipR @s@
 
-// Нет молота стихии: тяжёлый молот
+// No element hammer: heavy hammer
 ?ph = 3 & foe.armor > 0 &
 ^item.GetCount(w) = 0
  equip heavy hammer
 
-// Способности: молот по броне, клинок
+// Abilities: hammer vs armor, blade
 ?ph = 3 & foe.armor > 0 &
 ^item.GetCooldown("heavy_hammer") <= 0
  equip heavy hammer
@@ -247,14 +244,14 @@ ph = 0
 ^item.GetCooldown("blade") <= 0
  equip blade
 
-// ===== Уклонение от шара =====
+// ===== Orb dodge =====
 ?loc = rocky & dodgeState > 0 &
 ^foe.state = dodgeState &
 ^foe.time >= dodgeTime &
 ^item.GetCooldown("mind") <= 0
  equipL mind
 
-// ===== После босса: зелье =====
+// ===== After boss: potion =====
 ?foe = boss & loc ! rocky
  bossSeen = 1
 ?foe.id = dysangelos_perfected
@@ -267,7 +264,7 @@ ph = 0
 ?bossSeen = 1 & foe ! boss & foe.count = 0
  bossSeen = 0
 
-// ===== Какой призыв нужен =====
+// ===== Which summon =====
 need = 0
 wisp = 0
 ?loc = halls | loc = icy | loc = fungus
@@ -284,7 +281,7 @@ wisp = 0
  sumItem = "fire talisman"
  need = 1
 
-// ===== Вызов: строго в самом конце =====
+// ===== Summon: must stay last =====
 ?need = 1 & item.CanActivate() &
 ^tongue = 0
  equipL @leftW@
