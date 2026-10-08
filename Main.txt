@@ -116,8 +116,14 @@ hasVoid = 0
 ?isBoss = 1 & hp < maxhp / 3
  activate potion
 
-?hp < 10 & item.potion = empty
+?hp < 10 & item.potion = empty &
+^foe.hp > foe.maxhp / 4
  heal = 1
+
+// Foe almost dead: finish it, no healing
+?heal = 1 & foe.hp > 0 &
+^foe.hp <= foe.maxhp / 4
+ heal = 0
 
 ?hp > 40
  heal = 0
