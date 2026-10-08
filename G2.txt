@@ -1,4 +1,0 @@
-var g = import State
-var x = 0
-x = g.v
->`0,8,#yellow,shared v=@x@

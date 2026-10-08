@@ -1,2 +1,0 @@
-var g = import State
-g.SetV(7)
