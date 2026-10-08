@@ -27,12 +27,13 @@ var elems = [
 var dodgeState = 115
 var dodgeTime = 64
 
-// Nagaraja: measure! 0 = off
+// Nagaraja tongue (measured)
 // Tongue wind-up (dodge)
-var nagState = 0
-var nagTime = 0
+var nagState = 103
+var nagTime = 40
 // Tongue wrapped hero (hit hard)
-var wrapState = 0
+var wrapState = 104
+var wrapEnd = 107
 
 // Guardian hammer dodge (measure)
 var guardState = 0
@@ -78,7 +79,8 @@ wrap = 0
 ^nagState > 0 & foe.state = nagState
  tongue = 1
 ?loc = temple & isBoss = 1 &
-^wrapState > 0 & foe.state = wrapState
+^foe.state >= wrapState &
+^foe.state <= wrapEnd
  wrap = 1
  tongue = 1
 
@@ -189,9 +191,9 @@ hasVoid = 0
 ^item.GetCooldown("mind") <= 0
  equipL mind
 
-// ===== Temple: wrapped, blade only =====
+// ===== Temple: wrapped, ranged hits =====
 ?wrap = 1
- equip blade
+ equip crossbow
 
 // ===== Mine: Bronze Guardian =====
 guard = 0
