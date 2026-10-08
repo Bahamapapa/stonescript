@@ -156,8 +156,11 @@ hasVoid = 0
 
 // ===== Temple: blade on cultist and boss =====
 ?loc = temple & heal = 0 & ghost = 0
- equipL ice big sword
+ equipL poison big sword
  equipR poison shield
+?loc = temple & heal = 0 & ghost = 0 &
+^foe = poison
+ equipL ice big sword
 ?loc = temple & heal = 0 & ghost = 0 &
 ^foe = acronian &
 ^item.GetCooldown("blade") <= 0
