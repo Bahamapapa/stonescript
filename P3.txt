@@ -1,0 +1,47 @@
+// ===== Mine: Bronze Guardian =====
+guard = 0
+?loc = mine & isBoss = 1 & heal = 0
+ guard = 1
+
+// Far: crossbow
+?guard = 1 & foe.distance > melee
+ equip aether crossbow
+
+// Close, armor: hammer
+?guard = 1 & foe.distance <= melee &
+^foe.armor > 0
+ equipL aether hammer
+ equipR aether shield
+
+// Close, no armor: sword
+?guard = 1 & foe.distance <= melee &
+^foe.armor = 0
+ equipL aether sword
+ equipR aether shield
+
+// Abilities: heavy hammer, blade
+?guard = 1 & foe.distance <= melee &
+^foe.armor > 0 &
+^item.GetCooldown("heavy_hammer") <= 0
+ equip heavy hammer
+?guard = 1 & foe.distance <= melee &
+^foe.armor = 0 &
+^item.GetCooldown("blade") <= 0
+ equip blade
+
+// Hammer dodge
+?guard = 1 & guardState > 0 &
+^foe.state = guardState &
+^foe.time >= guardTime &
+^item.GetCooldown("mind") <= 0
+ equipL mind
+
+// ===== Deadwood: Poena =====
+// Heavy hammer keeps her stunned
+?poena = 1 & heal = 0
+ equip heavy hammer
+// Blade ready: one big hit
+?poena = 1 & heal = 0 &
+^item.GetCooldown("blade") <= 0
+ equip blade
+

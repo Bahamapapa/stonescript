@@ -1,0 +1,36 @@
+// ===== After boss: potion =====
+?foe = boss & loc ! rocky
+ bossSeen = 1
+?foe.id = dysangelos_perfected
+ bossSeen = 1
+
+?bossSeen = 1 & foe ! boss &
+^foe.count = 0 & hp < maxhp &
+^item.CanActivate()
+ activate potion
+?bossSeen = 1 & foe ! boss & foe.count = 0
+ bossSeen = 0
+
+// ===== Which summon =====
+need = 0
+wisp = 0
+?loc = halls | loc = icy | loc = fungus
+ wisp = 1
+?wisp = 1 & hasWisp = 0
+ sumItem = "fire talisman"
+ need = 1
+?loc = temple & isBoss = 0 &
+^hasVoid = 0
+ sumItem = "aether talisman"
+ need = 1
+?loc = temple & isBoss = 1 &
+^tongue = 0 & hasWisp = 0
+ sumItem = "fire talisman"
+ need = 1
+
+// ===== Summon: must stay last =====
+?need = 1 & item.CanActivate() &
+^tongue = 0
+ equipL @leftW@
+ equipR @sumItem@
+ activate R
