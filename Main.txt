@@ -113,6 +113,8 @@ hasVoid = 0
 // ===== General =====
 ?hp < 10
  activate potion
+?isBoss = 1 & hp < maxhp / 3
+ activate potion
 
 ?hp < 10 & item.potion = empty
  heal = 1
