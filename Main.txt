@@ -2,8 +2,6 @@ var heal = 0
 var bossSeen = 0
 var el = 0
 var lastArmor = 0
- hist = ""
- lastSt = -1
 var ph = 0
 var wisp = 0
 var isBoss = 0
@@ -53,6 +51,8 @@ var ptime = 0
  bossSeen = 0
  el = 0
  lastArmor = 0
+ hist = ""
+ lastSt = -1
 
 isBoss = 0
 ?foe = boss
