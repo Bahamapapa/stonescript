@@ -1,2 +1,2 @@
 var g = import State
-g.v = 7
+g.SetV(7)

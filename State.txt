@@ -1,1 +1,3 @@
 var v = 0
+func SetV(a)
+ v = a
